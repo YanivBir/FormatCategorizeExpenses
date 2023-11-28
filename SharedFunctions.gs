@@ -3,7 +3,7 @@ function ConvertExcelToGoogleSheets(orginalFile, convertedFile) {
   let excelFile = (files.hasNext()) ? files.next() : null;
   let blob = excelFile.getBlob();
   let config = {
-    title: convertedFile.toString() , //sets the title of the converted file
+    title: convertedFile.toString(),
     parents: [{id: excelFile.getParents().next().getId()}],
     mimeType: MimeType.GOOGLE_SHEETS
   };
@@ -12,7 +12,6 @@ function ConvertExcelToGoogleSheets(orginalFile, convertedFile) {
 }
 
 function OpenExternalSpreadsheet(spreadsheetName, spreadsheetTab) {
-  // Search for the file in Google Drive by name.
   let files = DriveApp.getFilesByName(spreadsheetName);
 
   if (files.hasNext()) {
@@ -51,13 +50,19 @@ function MoveColumn(sheet, sourceIndex, destinationIndex) {
   destinationRange.setValues(sourceValues);
 }
 
-function AppendDataToSheet(sourceSheet, destinationSheet) {
-  if (sourceSheet && destinationSheet) {
-    let data = sourceSheet.getDataRange().getValues();
-    let lastRow = destinationSheet.getLastRow();
-    destinationSheet.getRange(lastRow + 1, 1, data.length, data[0].length).setValues(data);
-    Logger.log("Data appended from sourceSheet to destinationSheet.");
-  } else {
-    Logger.log('Source or destination sheet not found');
+function AppendDataToSheet(sourceSheet, targetSheet) {
+ if (!sourceSheet || !targetSheet) {
+    Logger.log('Sheets not found.');
+    return;
   }
+
+  let sourceData = sourceSheet.getDataRange().getValues();
+  let sourceBackgrounds = sourceSheet.getDataRange().getBackgrounds();
+
+  for (var i = 0; i < sourceData.length; i++) {
+    targetSheet.appendRow(sourceData[i]);
+    targetSheet.getRange(targetSheet.getLastRow(), 1, 1, sourceData[i].length).setBackgrounds([sourceBackgrounds[i]]);
+  }
+
+  Logger.log('Sheets appended successfully.');
 }
