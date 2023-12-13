@@ -8,7 +8,11 @@ let MONEY_SPREADSHEET = "Money";
 let MONEY_SHEET = "Expenses";
 let CATEGORIES_SHEET = "Categories";
 
+let CHARGING_DATE_DBG = null;
+
 function FormatAndAppendNewMonth(desiredDate) {
+  if(!desiredDate)
+    desiredDate = CHARGING_DATE_DBG;
   ConvertExcelToGoogleSheets(CAL_SPREADSHEET, CONVERTED_SPREADSHEET);
   let convertedSheet = OpenExternalSpreadsheet(CONVERTED_SPREADSHEET, CONVERTED_SHEET);
   let categories = LoadCategories();
