@@ -2,8 +2,8 @@ let SRC_CHARGING_DATE_COLUMN = 5;
 let DST_CHARGING_COLUMN = 1;
 let BUYING_DATE_COLUMN = 2;
 let BUSSNIES_COLUMN = 3;
-let CATEGORY_COLUMN = 7;
-let SUB_CATEGORY_COLUMN = 8;
+let CATEGORY_COLUMN = 6;
+let SUB_CATEGORY_COLUMN = 7;
 
 function FormatCalReport(sheet, categories, desiredChargingDate) {
   if(!desiredChargingDate)
@@ -19,7 +19,7 @@ function FormatCalReport(sheet, categories, desiredChargingDate) {
 function DeleteUnusedRowsAndColumns(sheet) {
   sheet.deleteRows(1, 2);
   sheet.deleteRow(sheet.getLastRow());
-  sheet.deleteColumns(sheet.getLastColumn() - 1, 2);
+  sheet.deleteColumns(sheet.getLastColumn() - 2, 3);
 }
 
 function SetTableStyle(sheet) {
@@ -50,6 +50,8 @@ function FormatTable(sheet, categories, desiredChargingDate) {
 function SetCategory(sheet, data, categories, i) {
   let bussniesName = data[i][BUSSNIES_COLUMN - 1];
   let category = categories[bussniesName];
+  if(!category)
+    return;
   sheet.getRange(i + 1, CATEGORY_COLUMN).setValue(category.name);
   sheet.getRange(i + 1, CATEGORY_COLUMN).setBackground(category.background);
   if(category.subName) {
@@ -66,13 +68,6 @@ function FormatChargingData(dateValue) {
       return formattedDate;
     }
     throw new Error("An error occurred while processing charging date, got: \"" +  dateValue + "\" as input.");
-}
-
-function FormatBuyingDate(dateValue) {
-  let parts = dateValue.split('/');
-  let day = parts[0];
-  let month = parts[1];
-  return day + "/" + month;
 }
 
 function ReverseRows(sheet) {
