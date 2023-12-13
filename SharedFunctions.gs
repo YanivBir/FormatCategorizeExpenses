@@ -1,6 +1,10 @@
 function ConvertExcelToGoogleSheets(orginalFile, convertedFile) {
   let files = DriveApp.getFilesByName(orginalFile);
   let excelFile = (files.hasNext()) ? files.next() : null;
+  if(!excelFile) {
+    throw new Error("Excel file: " + orginalFile +" not found in Google Drive.");
+    return;
+  }
   let blob = excelFile.getBlob();
   let config = {
     title: convertedFile.toString(),
